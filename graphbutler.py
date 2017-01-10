@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import numpy as np
@@ -22,10 +23,29 @@ class Graph(object):
         self.draw_to(figure)
         plt.show()
 
+    """Return the path where the graph will be saved by save()."""
+    def path(self, dir):
+        fn = reduce(lambda val, name: val or getattr(self, name, None),
+            ("filename", "title"), None) or self.__class__.__name__
+
+        if not fn.lower().endswith(".svg"):
+            fn += ".svg"
+
+        return os.path.join(dir, fn)
+
+    """Save the graph to the file system."""
+    def save(self, dir):
+        path = self.path(dir)
+        print("Saving %s to %s" %(self.__class__.__name__, path))
+
+        self.draw_to(plt.figure())
+        plt.savefig(path)
+
+
 if __name__ == "__main__":
     class SineGraph(Graph):
         title = "Sine curve"
         x = np.arange(0.0, 10.0, 0.01)
         y = np.sin(x)
 
-    SineGraph().show()
+    SineGraph().save(".")
