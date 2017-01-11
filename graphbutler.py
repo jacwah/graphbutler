@@ -15,7 +15,13 @@ class Graph(object):
     def draw_to(self, figure):
         figure.suptitle(self.title)
         axes = figure.gca()
-        axes.plot(self.x, self.y)
+
+        if isinstance(self.y, tuple):
+            for (y, label) in self.y:
+                axes.plot(self.x, y, label=label)
+            axes.legend()
+        else:
+            axes.plot(self.x, self.y)
 
     """Draw the graph in a GUI frontend through pyplot."""
     def show(self):
@@ -46,6 +52,9 @@ if __name__ == "__main__":
     class SineGraph(Graph):
         title = "Sine curve"
         x = np.arange(0.0, 10.0, 0.01)
-        y = np.sin(x)
+        y = (
+            (1 * np.sin(x), "A = 1"),
+            (2 * np.sin(x), "A = 2")
+        )
 
-    SineGraph().save(".")
+    SineGraph().show()
