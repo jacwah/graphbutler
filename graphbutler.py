@@ -16,7 +16,7 @@ class Graph(object):
         figure.suptitle(self.title)
         axes = figure.gca()
 
-        if isinstance(self.y, tuple):
+        if isinstance(self.y, Parameterized):
             for (y, label) in self.y:
                 axes.plot(self.x, y, label=label)
             axes.legend()
@@ -47,14 +47,33 @@ class Graph(object):
         self.draw_to(plt.figure())
         plt.savefig(path)
 
+"""A parameterized dependent variable.
+
+Use the to graph multiple slight variations of the same function in the same
+figure."""
+class Parameterized(object):
+    def __init__(self, name, template, values):
+        self.name = name
+        self.template = template
+        self.values = values
+
+    def __iter__(self):
+        self.index = 0
+        return self
+
+    def next(self):
+        try:
+            value = self.values[self.index]
+        except IndexError:
+            raise StopIteration
+
+        self.index += 1
+        return self.template(value), "%s = %s" %(self.name, value)
 
 if __name__ == "__main__":
     class SineGraph(Graph):
         title = "Sine curve"
         x = np.arange(0.0, 10.0, 0.01)
-        y = (
-            (1 * np.sin(x), "A = 1"),
-            (2 * np.sin(x), "A = 2")
-        )
+        y = Parameterized("A", lambda A, x=x: A * np.sin(x), (1, 2, 3))
 
     SineGraph().show()
