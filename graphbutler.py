@@ -9,7 +9,6 @@ import numpy as np
 
 When defining a graph, subclass this class and provide an x and y numpy array."""
 class Graph(object):
-    title = None
 
     """Draw the graph to a matplotlib figure."""
     def draw_to(self, figure):
@@ -42,15 +41,14 @@ class Graph(object):
     """Save the graph to the file system."""
     def save(self, dir):
         path = self.path(dir)
-        print("Saving %s to %s" %(self.__class__.__name__, path))
+        print("Saving graph to %s" %path)
 
         self.draw_to(plt.figure())
         plt.savefig(path)
 
 """A parameterized dependent variable.
 
-Use the to graph multiple slight variations of the same function in the same
-figure."""
+Use to graph multiple slight variations of the same function together."""
 class Parameterized(object):
     def __init__(self, name, template, values):
         self.name = name
@@ -71,9 +69,12 @@ class Parameterized(object):
         return self.template(value), "%s = %s" %(self.name, value)
 
 if __name__ == "__main__":
-    class SineGraph(Graph):
-        title = "Sine curve"
-        x = np.arange(0.0, 10.0, 0.01)
-        y = Parameterized("A", lambda A, x=x: A * np.sin(x), (1, 2, 3))
+    def sine_graph():
+        g = Graph()
+        g.x = np.arange(0.0, 10.0, 0.01)
+        g.y = Parameterized("A", lambda A: A * np.sin(g.x), (1, 2, 3))
+        g.title = "Sine wave"
 
-    SineGraph().show()
+        return g
+
+    sine_graph().save(".")
