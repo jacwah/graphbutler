@@ -43,7 +43,7 @@ class Graph(object):
 
         return os.path.join(dir, fn)
 
-    """Save the graph to the file system."""
+    """Save the graph as an SVG file."""
     def save(self, dir):
         path = self.path(dir)
         print("Saving graph to %s" %path)
@@ -73,8 +73,11 @@ class Parameterized(object):
         self.index += 1
         return self.template(value), "%s = %s" %(self.name, value)
 
-recipes = []
+recipes = set()
 
+"""Decorator for graph recipes.
+
+Use this decorator to register recipes with save_all."""
 def recipe(func):
     @functools.wraps(func)
     def wrapper():
@@ -82,26 +85,13 @@ def recipe(func):
         graph.recipe = wrapper
         return graph
 
-    recipes.append(wrapper)
+    recipes.add(wrapper)
     return wrapper
 
+"""Save all recipes as SVG files."""
 def save_all(dir=None):
     if dir is None:
         dir = os.getcwd()
 
     for recipe in recipes:
         recipe().save(dir)
-
-if __name__ == "__main__":
-    import numpy as np
-
-    @recipe
-    def sine_graph():
-        g = Graph()
-        g.x = np.arange(0.0, 10.0, 0.01)
-        g.y = Parameterized("A", lambda A: A * np.sin(g.x), (1, 2, 3))
-        g.title = "Sine wave"
-
-        return g
-
-    save_all()
