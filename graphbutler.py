@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
 import os
+import functools
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
-import numpy as np
 
 """Represents the graph of a mathematical function.
 
@@ -12,7 +11,11 @@ class Graph(object):
 
     """Draw the graph to a matplotlib figure."""
     def draw_to(self, figure):
-        figure.suptitle(self.title)
+        try:
+            figure.suptitle(self.title)
+        except AttributeError:
+            pass
+
         axes = figure.gca()
 
         if isinstance(self.y, Parameterized):
@@ -30,8 +33,10 @@ class Graph(object):
 
     """Return the path where the graph will be saved by save()."""
     def path(self, dir):
-        fn = reduce(lambda val, name: val or getattr(self, name, None),
-            ("filename", "title"), None) or self.__class__.__name__
+        try:
+            fn = getattr(self, "filename", None) or self.recipe.__name__
+        except AttributeError:
+            raise AttributeError("Graph must have filename or recipe.")
 
         if not fn.lower().endswith(".svg"):
             fn += ".svg"
@@ -68,7 +73,29 @@ class Parameterized(object):
         self.index += 1
         return self.template(value), "%s = %s" %(self.name, value)
 
+recipes = []
+
+def recipe(func):
+    @functools.wraps(func)
+    def wrapper():
+        graph = func()
+        graph.recipe = wrapper
+        return graph
+
+    recipes.append(wrapper)
+    return wrapper
+
+def save_all(dir=None):
+    if dir is None:
+        dir = os.getcwd()
+
+    for recipe in recipes:
+        recipe().save(dir)
+
 if __name__ == "__main__":
+    import numpy as np
+
+    @recipe
     def sine_graph():
         g = Graph()
         g.x = np.arange(0.0, 10.0, 0.01)
@@ -77,4 +104,4 @@ if __name__ == "__main__":
 
         return g
 
-    sine_graph().save(".")
+    save_all()
