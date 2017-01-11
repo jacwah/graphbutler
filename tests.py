@@ -25,3 +25,17 @@ class GraphRecipePathTest(unittest.TestCase):
             return graphbutler.Graph()
 
         self.assertEqual(graph_recipe_test().path("."), os.path.join(".", "graph_recipe_test.svg"))
+
+class ParameterizedTest(unittest.TestCase):
+    def setUp(self):
+        template = lambda a: 2 * a
+        values = range(3)
+        self.param = graphbutler.Parameterized("a", template, values)
+
+    def test_values(self):
+        results = [res for res, _ in self.param]
+        self.assertEqual([0, 2, 4], results)
+
+    def test_labels(self):
+        labels = [label for _, label in self.param]
+        self.assertEqual(["a = 0", "a = 1", "a = 2"], labels)
