@@ -1,4 +1,10 @@
 # virtualenv
 /venv/
 
+# setup.py
+/dist/
+/build/
+/graphbutler.egg-info/
+
+# python
 *.py[cod]
