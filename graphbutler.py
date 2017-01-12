@@ -4,10 +4,18 @@ import os
 import functools
 import matplotlib.pyplot as plt
 
+# See http://matplotlib.org/api/lines_api.html#matplotlib.lines.Line2D
+LINE_OPTIONS = {
+    "linewidth": 2
+}
+
 """Represents the graph of a mathematical function.
 
 When defining a graph, subclass this class and provide an x and y numpy array."""
 class Graph(object):
+
+    def __init__(self):
+        self.axes_options = {}
 
     """Draw the graph to a matplotlib figure."""
     def draw_to(self, figure):
@@ -16,14 +24,14 @@ class Graph(object):
         except AttributeError:
             pass
 
-        axes = figure.gca()
+        axes = figure.gca(**self.axes_options)
 
         if isinstance(self.y, Parameterized):
             for (y, label) in self.y:
-                axes.plot(self.x, y, label=label)
+                axes.plot(self.x, y, label=label, **LINE_OPTIONS)
             axes.legend()
         else:
-            axes.plot(self.x, self.y)
+            axes.plot(self.x, self.y, **LINE_OPTIONS)
 
     """Draw the graph in a GUI frontend through pyplot."""
     def show(self):
