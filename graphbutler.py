@@ -41,20 +41,21 @@ class Graph(object):
         plt.close()
 
     """Return the path where the graph will be saved by save()."""
-    def path(self, dir):
+    def path(self, dir, format="svg"):
         try:
             fn = getattr(self, "filename", None) or self.recipe.__name__
         except AttributeError:
             raise AttributeError("Graph must have filename or recipe.")
 
-        if not fn.lower().endswith(".svg"):
-            fn += ".svg"
+        extension = "." + format.lower()
+        if not fn.lower().endswith(extension):
+            fn += extension
 
         return os.path.join(dir, fn)
 
     """Save the graph as an SVG file."""
-    def save(self, dir):
-        path = self.path(dir)
+    def save(self, dir, format="svg"):
+        path = self.path(dir, format=format)
         print("Saving graph to %s" %path)
 
         self.draw_to(plt.figure())
@@ -99,9 +100,9 @@ def recipe(func):
     return wrapper
 
 """Save all recipes as SVG files."""
-def save_all(dir=None):
+def save_all(dir=None, format="svg"):
     if dir is None:
         dir = os.getcwd()
 
     for recipe in recipes:
-        recipe().save(dir)
+        recipe().save(dir, format=format)
