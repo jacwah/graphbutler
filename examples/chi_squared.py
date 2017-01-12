@@ -5,7 +5,7 @@ from graphbutler import recipe, save_all, Graph, Parameterized
 @recipe
 def chi_squared_pdf():
     g = Graph()
-    g.title = "Chi-squared probability distribution"
+    g.title = "Chi-squared probability density"
     g.x = np.arange(0.0, 9.0, 0.01)
 
     def y(k):
@@ -19,4 +19,4 @@ def chi_squared_pdf():
 
 if __name__ == "__main__":
     # chi_squared_pdf().show()
-    save_all()
+    save_all(format="png")
