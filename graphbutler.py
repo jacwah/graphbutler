@@ -30,6 +30,7 @@ class Graph(object):
         figure = plt.figure()
         self.draw_to(figure)
         plt.show()
+        plt.close()
 
     """Return the path where the graph will be saved by save()."""
     def path(self, dir):
@@ -50,6 +51,7 @@ class Graph(object):
 
         self.draw_to(plt.figure())
         plt.savefig(path)
+        plt.close()
 
 """A parameterized dependent variable.
 
