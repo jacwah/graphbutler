@@ -16,5 +16,4 @@ def chi_squared_pdf():
     return g
 
 if __name__ == "__main__":
-    # chi_squared_pdf().show()
-    save_all(format="png")
+    chi_squared_pdf().show()

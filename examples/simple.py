@@ -9,4 +9,4 @@ def sine_wave():
     return g
 
 if __name__ == '__main__':
-    save_all()
+    sine_wave().show()
