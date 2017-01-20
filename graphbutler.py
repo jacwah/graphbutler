@@ -1,3 +1,18 @@
+"""Graph butler is a framework for generating simple, reproducible graphs.
+
+The Graph class is used to specify the properties of a single graph. This is
+usually done in what is called a recipe, an argument-less function returning
+a Graph object.
+
+The recipe decorator and the save_all function work together to provide an easy
+interface for saving graphs to disk.
+
+The Parameterized class simplifies creating graphs of minor variations of the
+same function.
+
+For usage examples, see the examples directory.
+"""
+
 import os
 import functools
 import matplotlib.pyplot as plt
@@ -8,19 +23,19 @@ LINE_OPTIONS = {
     "linewidth": 2
 }
 
-"""Represents the graph of a mathematical function.
-
-When defining a graph, subclass this class and provide an x and y numpy array."""
 class Graph(object):
+    """Represents the graph of a mathematical function.
+
+    When defining a graph, subclass this class and provide an x and y numpy array."""
 
     def __init__(self):
         self.axes_options = {}
 
-    """Plot a numpy array to axes.
-
-    options should be a dict contain matplotlib Line2D. The values in
-    options take precedence over LINE_OPTIONS."""
     def plot(self, arr, axes, **options):
+        """Plot a numpy array to axes.
+
+        options should be a dict contain matplotlib Line2D. The values in
+        options take precedence over LINE_OPTIONS."""
         try:
             arr[arr < self.y_min] = numpy.nan
         except AttributeError:
@@ -36,8 +51,8 @@ class Graph(object):
 
         axes.plot(self.x, arr, **all_options)
 
-    """Draw the graph to a matplotlib figure."""
     def draw_to(self, figure):
+        """Draw the graph to a matplotlib figure."""
         try:
             figure.suptitle(self.title)
         except AttributeError:
@@ -52,15 +67,15 @@ class Graph(object):
         else:
             self.plot(self.y, axes)
 
-    """Draw the graph in a GUI frontend through pyplot."""
     def show(self):
+        """Draw the graph in a GUI frontend through pyplot."""
         figure = plt.figure()
         self.draw_to(figure)
         plt.show()
         plt.close()
 
-    """Return the path where the graph will be saved by save()."""
     def path(self, dir, format="svg"):
+        """Return the path where the graph will be saved by save()."""
         try:
             fn = getattr(self, "filename", None) or self.recipe.__name__
         except AttributeError:
@@ -72,8 +87,8 @@ class Graph(object):
 
         return os.path.join(dir, fn)
 
-    """Save the graph as an SVG file."""
     def save(self, dir, format="svg"):
+        """Save the graph as a file."""
         path = self.path(dir, format=format)
         print("Saving graph to %s" %path)
 
@@ -81,10 +96,12 @@ class Graph(object):
         plt.savefig(path)
         plt.close()
 
-"""A parameterized dependent variable.
-
-Use to graph multiple slight variations of the same function together."""
 class Parameterized(object):
+    """A parameterized dependent variable.
+
+    Use to graph multiple slight variations of the same function together.
+    Implements the iterator protocol."""
+
     def __init__(self, name, template, values):
         self.name = name
         self.template = template
@@ -105,10 +122,10 @@ class Parameterized(object):
 
 recipes = set()
 
-"""Decorator for graph recipes.
-
-Use this decorator to register recipes with save_all."""
 def recipe(func):
+    """Decorator for graph recipes.
+
+    Use this decorator to register recipes with save_all."""
     @functools.wraps(func)
     def wrapper():
         graph = func()
@@ -118,8 +135,8 @@ def recipe(func):
     recipes.add(wrapper)
     return wrapper
 
-"""Save all recipes as SVG files."""
 def save_all(dir=None, format="svg"):
+    """Save all defined recipes as files."""
     if dir is None:
         dir = os.getcwd()
 
