@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import functools
 import matplotlib.pyplot as plt
