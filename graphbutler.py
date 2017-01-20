@@ -1,6 +1,7 @@
 import os
 import functools
 import matplotlib.pyplot as plt
+import numpy
 
 # See http://matplotlib.org/api/lines_api.html#matplotlib.lines.Line2D
 LINE_OPTIONS = {
@@ -15,6 +16,26 @@ class Graph(object):
     def __init__(self):
         self.axes_options = {}
 
+    """Plot a numpy array to axes.
+
+    options should be a dict contain matplotlib Line2D. The values in
+    options take precedence over LINE_OPTIONS."""
+    def plot(self, arr, axes, **options):
+        try:
+            arr[arr < self.y_min] = numpy.nan
+        except AttributeError:
+            pass
+
+        try:
+            arr[arr > self.y_max] = numpy.nan
+        except AttributeError:
+            pass
+
+        all_options = LINE_OPTIONS.copy()
+        all_options.update(options)
+
+        axes.plot(self.x, arr, **all_options)
+
     """Draw the graph to a matplotlib figure."""
     def draw_to(self, figure):
         try:
@@ -26,10 +47,10 @@ class Graph(object):
 
         if isinstance(self.y, Parameterized):
             for (y, label) in self.y:
-                axes.plot(self.x, y, label=label, **LINE_OPTIONS)
+                self.plot(y, axes, label=label)
             axes.legend()
         else:
-            axes.plot(self.x, self.y, **LINE_OPTIONS)
+            self.plot(self.y, axes)
 
     """Draw the graph in a GUI frontend through pyplot."""
     def show(self):
