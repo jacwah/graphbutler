@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="graphbutler",
     version="0.1.0",
-    description="Simple, reproducible SVG graphs",
+    description="Generate simple, reproducible graphs.",
     url="https://github.com/jacwah/graphbutler",
     author="Jacob Wahlgren",
     author_email="jacob.wahlgren@gmail.com",
@@ -21,5 +21,5 @@ setup(
     ],
     keywords="graph plot matplotlib",
     py_modules=["graphbutler"],
-    install_requires=["matplotlib"]
+    install_requires=["matplotlib", "numpy"]
 )
