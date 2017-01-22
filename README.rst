@@ -27,6 +27,13 @@ recipes, call :python:`graphbutler.save_all()`. To show a preview, call
 
 For more examples, see the examples directory.
 
+Install
+=======
+
+Graph butler is available on PyPI. Install it using pip::
+
+    $ pip install graphbutler
+
 Status
 ======
 This project is in an experimental stage. Feel free to open an issue
