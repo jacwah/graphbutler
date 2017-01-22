@@ -18,8 +18,8 @@ Example
         g.y = numpy.sin(g.x)
         return g
 
-This defines a graph of the :math:`sin(x)` function in the interval
-:math:`0 \leq x \leq 10`.
+This defines a graph of the ``sin(x)`` function in the interval
+``0 ≤ x ≤ 10``.
 
 To save the graph to disk, call :python:`sine_wave().save()`. To save all
 recipes, call :python:`graphbutler.save_all()`. To show a preview, call
